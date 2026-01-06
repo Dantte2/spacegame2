@@ -1,7 +1,23 @@
-[gd_scene load_steps=21 format=3 uid="uid://deqmb1js8tmcv"]
+[gd_scene load_steps=37 format=3 uid="uid://deqmb1js8tmcv"]
 
 [ext_resource type="Texture2D" uid="uid://dwq11ufbujmyt" path="res://assets/projectiles/explosion/spritesheet.png" id="1_grb1q"]
 [ext_resource type="Script" uid="uid://dje1gnumx7ty5" path="res://scripts/explosion_damage.gd" id="1_hem0v"]
+[ext_resource type="Texture2D" uid="uid://c0lpp157w0exw" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp1.png" id="2_xbieu"]
+[ext_resource type="Texture2D" uid="uid://frwopyx2pw6e" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp2.png" id="3_vlbkc"]
+[ext_resource type="Texture2D" uid="uid://bscfu31ku4dvp" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp3.png" id="4_p2sxk"]
+[ext_resource type="Texture2D" uid="uid://c8fr2ylucrwsa" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp4.png" id="5_7r4hm"]
+[ext_resource type="Texture2D" uid="uid://de44qg3gywa1h" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp5.png" id="6_itdyk"]
+[ext_resource type="Texture2D" uid="uid://cd7d7bv21fpwo" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp6.png" id="7_qf4ue"]
+[ext_resource type="Texture2D" uid="uid://dnb1yhgittet" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp7.png" id="8_ih1pg"]
+[ext_resource type="Texture2D" uid="uid://b7yb8brw0lili" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp8.png" id="9_tpgp4"]
+[ext_resource type="Texture2D" uid="uid://c4m0ebq7r45fs" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp9.png" id="10_by8d5"]
+[ext_resource type="Texture2D" uid="uid://ysws56wkb0bg" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp10.png" id="11_e54oh"]
+[ext_resource type="Texture2D" uid="uid://cy8sieul44osd" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp11.png" id="12_6c2xf"]
+[ext_resource type="Texture2D" uid="uid://lxbtvhgi1syy" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp12.png" id="13_slphe"]
+[ext_resource type="Texture2D" uid="uid://273uieb78i7y" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp13.png" id="14_3283f"]
+[ext_resource type="Texture2D" uid="uid://3vu2v1smkggg" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp14.png" id="15_tk6aw"]
+[ext_resource type="Texture2D" uid="uid://c71cvf1md2bge" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp15.png" id="16_sok1b"]
+[ext_resource type="Texture2D" uid="uid://bk20ugp7igoug" path="res://assets/projectiles/explosion/purpleboom/Shot3_exp16.png" id="17_7s53q"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_grb1q"]
 radius = 84.0238
@@ -74,6 +90,59 @@ region = Rect2(1080, 0, 72, 72)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("2_xbieu")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_vlbkc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_p2sxk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_7r4hm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_itdyk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_qf4ue")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ih1pg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_tpgp4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_by8d5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_e54oh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_6c2xf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_slphe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_3283f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_tk6aw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_sok1b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_7s53q")
+}],
+"loop": false,
+"name": &"big",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_hem0v")
 }, {
 "duration": 1.0,
@@ -139,5 +208,5 @@ shape = SubResource("CircleShape2D_grb1q")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(8, 8)
 sprite_frames = SubResource("SpriteFrames_xbieu")
-autoplay = "default"
-frame_progress = 1.0
+animation = &"big"
+autoplay = "big"

@@ -1,12 +1,12 @@
 [gd_scene load_steps=10 format=3 uid="uid://c7gqn3pkx6gpp"]
 
-[ext_resource type="Texture2D" uid="uid://doapxmhc10s73" path="res://assets/enemy/Ship6/Ship6.png" id="1_t3swx"]
 [ext_resource type="Script" uid="uid://bvcokfns8ytk2" path="res://scripts/enemy_6.gd" id="1_u0f2w"]
 [ext_resource type="PackedScene" uid="uid://divjny82w8yty" path="res://scenes/death_explosion.tscn" id="2_jv3bd"]
-[ext_resource type="Texture2D" uid="uid://cfr83tcsacecp" path="res://assets/enemy/Ship6/Exhaust/Turbo_flight/Exhaust1/exhaust1.png" id="2_nl5s5"]
-[ext_resource type="Texture2D" uid="uid://ceqq566gime6y" path="res://assets/enemy/Ship6/Exhaust/Turbo_flight/Exhaust1/exhaust2.png" id="3_u0f2w"]
-[ext_resource type="Texture2D" uid="uid://c0ei2dm3dh0dp" path="res://assets/enemy/Ship6/Exhaust/Turbo_flight/Exhaust1/exhaust3.png" id="4_jv3bd"]
-[ext_resource type="Texture2D" uid="uid://bbbxaolemhps" path="res://assets/enemy/Ship6/Exhaust/Turbo_flight/Exhaust1/exhaust4.png" id="5_tbg1l"]
+[ext_resource type="Texture2D" uid="uid://du7kfu3jj6n68" path="res://assets/enemy/elite_enemy/1/Boss_ship3.png" id="3_jv3bd"]
+[ext_resource type="Texture2D" uid="uid://nakr3apb2pep" path="res://assets/enemy/bosses/exhaust/boss1/Level7_Turbo_001.png" id="4_tbg1l"]
+[ext_resource type="Texture2D" uid="uid://dsh6v8fhwmxfe" path="res://assets/enemy/bosses/exhaust/boss1/Level7_Turbo_003.png" id="5_0ji7c"]
+[ext_resource type="Texture2D" uid="uid://krx8kk8coth" path="res://assets/enemy/bosses/exhaust/boss1/Level7_Turbo_004.png" id="6_i2pgm"]
+[ext_resource type="Texture2D" uid="uid://cd6l0u7b3hi07" path="res://assets/enemy/bosses/exhaust/boss1/Level7_Turbo_005.png" id="7_qo1r4"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0ji7c"]
 radius = 33.0
@@ -16,16 +16,16 @@ height = 108.0
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_nl5s5")
+"texture": ExtResource("4_tbg1l")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_u0f2w")
+"texture": ExtResource("5_0ji7c")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_jv3bd")
+"texture": ExtResource("6_i2pgm")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_tbg1l")
+"texture": ExtResource("7_qo1r4")
 }],
 "loop": true,
 "name": &"default",
@@ -38,7 +38,7 @@ script = ExtResource("1_u0f2w")
 death_animation_scene = ExtResource("2_jv3bd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_t3swx")
+texture = ExtResource("3_jv3bd")
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -46,12 +46,11 @@ rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_0ji7c")
 
 [node name="BulletSpawn" type="Node2D" parent="."]
-position = Vector2(-43, 0)
+position = Vector2(-75, 30)
 
 [node name="Exhaust" type="AnimatedSprite2D" parent="."]
 z_index = -1
-position = Vector2(62, -1.5)
+position = Vector2(64, 7)
 scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_i2pgm")
-frame_progress = 0.5345451
-flip_h = true
+frame_progress = 0.5694357
