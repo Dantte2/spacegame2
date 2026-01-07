@@ -1,9 +1,7 @@
-[gd_scene load_steps=22 format=3 uid="uid://dqpfyunvt0ypa"]
+[gd_scene load_steps=20 format=3 uid="uid://dqpfyunvt0ypa"]
 
 [ext_resource type="Script" uid="uid://4pm1pv554221" path="res://scripts/enemy_spawner.gd" id="1_devoi"]
 [ext_resource type="Texture2D" uid="uid://drgo8don7li6e" path="res://assets/spawn/pipo-gate01a192.png" id="1_ks1gq"]
-[ext_resource type="PackedScene" uid="uid://bg0nh4fulwty8" path="res://scenes/enemy_1.tscn" id="2_xl0gr"]
-[ext_resource type="PackedScene" uid="uid://caqixb4uk1em8" path="res://scenes/enemy_2.tscn" id="3_ih16b"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_on2lk"]
 atlas = ExtResource("1_ks1gq")
@@ -123,8 +121,7 @@ size = Vector2(488, 952)
 
 [node name="EnemySpawner" type="Node2D"]
 script = ExtResource("1_devoi")
-enemy1_group = Array[PackedScene]([ExtResource("2_xl0gr")])
-stationary_enemies = Array[PackedScene]([ExtResource("3_ih16b")])
+top_spawn_points = Array[Vector2]([Vector2(200, -50), Vector2(400, -50), Vector2(600, -50)])
 
 [node name="Portal" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_devoi")

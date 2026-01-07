@@ -1,183 +1,192 @@
 extends Node2D
 
 # ==========================
-# --- Spawner Toggle ---
+# --- Toggles / Settings ---
 # ==========================
-@export var spawner_enabled: bool = true   # Set to false to completely disable all spawning
+@export var spawner_enabled := true
 
 # ==========================
-# --- Enemy Groups ---
+# --- Enemy Slots (6 enemies) ---
 # ==========================
-@export var enemy1_group: Array[PackedScene] = []        # Enemies that spawn in waves randomly in the area
-@export var stationary_enemies: Array[PackedScene] = [] # Enemies that spawn in corners (e.g., turrets)
-@export var moving_enemies: Array[PackedScene] = []     # Enemies that move individually
+@export var enemy_1: PackedScene
+@export var enemy_2: PackedScene
+@export var enemy_3: PackedScene
+@export var enemy_4: PackedScene
+@export var enemy_5: PackedScene
+@export var enemy_6: PackedScene
+
+# ==========================
+# --- Max On Screen Per Enemy ---
+# ==========================
+@export var enemy_1_max_on_screen := 4
+@export var enemy_2_max_on_screen := 2
+@export var enemy_3_max_on_screen := 2
+@export var enemy_4_max_on_screen := 2
+@export var enemy_5_max_on_screen := 2
+@export var enemy_6_max_on_screen := 2
+
+# ==========================
+# --- Wave Counts / Intervals ---
+# ==========================
+@export var enemy_1_total := 10
+@export var enemy_1_interval := 0.01
+
+@export var enemy_2_total := 2
+@export var enemy_2_interval := 0.3
+
+@export var enemy_3_total := 1
+@export var enemy_3_interval := 0.5
+
+@export var enemy_4_total := 5
+@export var enemy_4_interval := 0.2
 
 # ==========================
 # --- Portal Settings ---
 # ==========================
-@export var portal_animation: String = "spawn"
-@export var spawn_delay: float = 0.5       # Time portal is visible before spawning enemy
-@export var portal_despawn: float = 0.5    # Time portal fades out after enemy spawns
-@export var fly_out_distance: float = 80   # How far enemies move on spawn
-@export var fly_out_direction: Vector2 = Vector2(-1, 0)
-@export var fly_out_duration: float = 0.3
+@export var portal_animation := "spawn"
+@export var spawn_delay := 0.2
+@export var portal_despawn := 0.4
+@export var fly_out_distance := 80.0
+@export var fly_out_direction := Vector2(-1, 0)
+@export var fly_out_duration := 0.3
 
 # ==========================
-# --- Enemy1 Wave Settings ---
+# --- Spawn Points ---
 # ==========================
-@export var wave_delay_min: float = 10.0
-@export var wave_delay_max: float = 15.0
-@export var spawn_interval_min: float = 0.2
-@export var spawn_interval_max: float = 0.5
-
-# ==========================
-# --- Stationary Enemy Settings ---
-# ==========================
-@export var big_turret_spawn_chance: float = 15.0        # Percent chance to spawn special turret
-@export var stationary_wave_delay_min: float = 10.0      # Min delay between stationary enemy waves
-@export var stationary_wave_delay_max: float = 12.0      # Max delay between stationary enemy waves
-
-# ==========================
-# --- Moving Enemy Wave Settings ---
-# ==========================
-@export var moving_wave_delay_min: float = 10.0      # Min delay between moving enemy waves
-@export var moving_wave_delay_max: float = 20.0      # Max delay between moving enemy waves
-@export var moving_spawn_count_min: int = 1         # Min enemies per wave
-@export var moving_spawn_count_max: int = 3         # Max enemies per wave
-@export var moving_spawn_interval_min: float = 0.2  # Min delay between enemies in the wave
-@export var moving_spawn_interval_max: float = 0.5  # Max delay between enemies in the wave
+@export var top_spawn_points: Array[Vector2] = []
+@export var right_corners: Array[Vector2] = []
 
 # ==========================
 # --- Nodes ---
 # ==========================
 @onready var template_portal: AnimatedSprite2D = $Portal
-@onready var spawn_shape: CollisionShape2D = $SpawnArea/CollisionShape2D
 
 # ==========================
-# --- Ready Function ---
+# --- Internal Arrays / Counters ---
+# ==========================
+var enemies: Array[PackedScene]
+var active_enemies := {}   # Tracks how many of each enemy type are currently on screen
+var max_on_screen := {}    # Max-on-screen caps
+
+# ==========================
+# --- Ready ---
 # ==========================
 func _ready() -> void:
-    randomize()
-    template_portal.visible = false
+	template_portal.visible = false
 
-    # Start spawning loops for each enemy group
-    call_deferred("_start_enemy1_waves")
-    call_deferred("_spawn_stationary_enemy_waves")
-    call_deferred("_start_moving_enemy_waves")
+	enemies = [enemy_1, enemy_2, enemy_3, enemy_4, enemy_5, enemy_6]
 
-# ==========================
-# --- Enemy1 Wave Loop ---
-# ==========================
-func _start_enemy1_waves() -> void:
-    while enemy1_group.size() > 0 and spawner_enabled:
-        var enemy_scene = enemy1_group[randi() % enemy1_group.size()]
+	max_on_screen = {
+		enemy_1: enemy_1_max_on_screen,
+		enemy_2: enemy_2_max_on_screen,
+		enemy_3: enemy_3_max_on_screen,
+		enemy_4: enemy_4_max_on_screen,
+		enemy_5: enemy_5_max_on_screen,
+		enemy_6: enemy_6_max_on_screen
+	}
 
-        # Spawn 2–4 enemies per wave with a small delay between each
-        for i in range(randi_range(2, 4)):
-            if not spawner_enabled:
-                return
-            call_deferred("_spawn_enemy_with_portal", enemy_scene)
-            await get_tree().create_timer(randf_range(0.1, 0.3)).timeout
+	for e in enemies:
+		active_enemies[e] = 0
 
-        # Wait for next wave
-        await get_tree().create_timer(randf_range(wave_delay_min, wave_delay_max)).timeout
+	# Start stage timeline
+	run_stage()
 
 # ==========================
-# --- Stationary Enemy Waves ---
+# --- Stage Timeline ---
 # ==========================
-func _spawn_stationary_enemy_waves() -> void:
-    if stationary_enemies.size() == 0:
-        return
+func run_stage() -> void:
+	await wait(2.0)
 
-    var rect = spawn_shape.shape as RectangleShape2D
-    var corner_area_size = Vector2(50, 50)  # Random spawn area around corners
+	# Spawn enemy queues
+	spawn_enemy_queued(enemy_1, enemy_1_total, top_spawn_points, enemy_1_interval)
+	await wait(3.0)
 
-    while spawner_enabled:
-        # Spawn enemies in top-right and bottom-right corners
-        var top_right = spawn_shape.global_position + Vector2(rect.extents.x - corner_area_size.x / 2, -rect.extents.y + corner_area_size.y / 2)
-        var bottom_right = spawn_shape.global_position + Vector2(rect.extents.x - corner_area_size.x / 2, rect.extents.y - corner_area_size.y / 2)
+	spawn_enemy_queued(enemy_2, enemy_2_total, right_corners, enemy_2_interval)
+	await wait(1.0)
 
-        await _spawn_stationary_enemy_at_corner(top_right, corner_area_size)
-        await _spawn_stationary_enemy_at_corner(bottom_right, corner_area_size)
+	spawn_enemy_queued(enemy_3, enemy_3_total, top_spawn_points, enemy_3_interval)
+	await wait(1.0)
 
-        # Wait configurable time before next stationary wave
-        await get_tree().create_timer(randf_range(stationary_wave_delay_min, stationary_wave_delay_max)).timeout
-
-# ---------------- Stationary Enemy Spawn Helper ----------------
-func _spawn_stationary_enemy_at_corner(center: Vector2, area_size: Vector2) -> void:
-    if not spawner_enabled:
-        return
-    var pos = center + Vector2(randf_range(-area_size.x/2, area_size.x/2), randf_range(-area_size.y/2, area_size.y/2))
-
-    # Choose special turret or normal stationary enemy
-    var enemy_scene = preload("res://Scenes/enemy_2.tscn") if randi_range(0, 99) < big_turret_spawn_chance else stationary_enemies[randi() % stationary_enemies.size()]
-
-    await _spawn_enemy_with_portal_at_position(enemy_scene, pos)
+	spawn_enemy_queued(enemy_4, enemy_4_total, top_spawn_points, enemy_4_interval)
 
 # ==========================
-# --- Moving Enemies ---
+# --- Generic Queued Spawner ---
 # ==========================
-func _start_moving_enemy_waves() -> void:
-    while moving_enemies.size() > 0 and spawner_enabled:
-        var enemy_scene = moving_enemies[randi() % moving_enemies.size()]
+func spawn_enemy_queued(enemy_scene: PackedScene, total_count: int, spawn_points: Array[Vector2], interval: float) -> void:
+	# Start the spawn loop asynchronously
+	call_deferred("_spawn_enemy_loop", enemy_scene, total_count, spawn_points, interval)
 
-        # Spawn configurable number of enemies per wave
-        var spawn_count = randi_range(moving_spawn_count_min, moving_spawn_count_max)
-        for i in range(spawn_count):
-            if not spawner_enabled:
-                return
-            await _spawn_enemy_with_portal(enemy_scene)
-            await get_tree().create_timer(randf_range(moving_spawn_interval_min, moving_spawn_interval_max)).timeout
-
-        # Wait before next wave
-        await get_tree().create_timer(randf_range(moving_wave_delay_min, moving_wave_delay_max)).timeout
-
-# ==========================
-# --- Random Spawn Position ---
-# ==========================
-func _get_random_spawn_position() -> Vector2:
-    var rect = spawn_shape.shape as RectangleShape2D
-    return spawn_shape.global_position + Vector2(randf_range(-rect.extents.x, rect.extents.x), randf_range(-rect.extents.y, rect.extents.y))
+func _spawn_enemy_loop(enemy_scene: PackedScene, total_count: int, spawn_points: Array[Vector2], interval: float) -> void:
+	var spawned_count := 0
+	while spawned_count < total_count:
+		if active_enemies[enemy_scene] < max_on_screen[enemy_scene]:
+			var pos = spawn_points[randi() % spawn_points.size()]
+			await spawn_enemy_with_portal_at_position(enemy_scene, pos)
+			active_enemies[enemy_scene] += 1
+			spawned_count += 1
+		# Very short wait so loop can check continuously
+		await wait(interval)
 
 # ==========================
-# --- Spawn Enemy with Portal ---
+# --- Spawn Enemy With Portal ---
 # ==========================
-func _spawn_enemy_with_portal(enemy_scene: PackedScene) -> void:
-    if not spawner_enabled:
-        return
-    await _spawn_enemy_with_portal_at_position(enemy_scene, _get_random_spawn_position())
+func spawn_enemy_with_portal_at_position(enemy_scene: PackedScene, pos: Vector2) -> void:
+	if not spawner_enabled:
+		return
 
-func _spawn_enemy_with_portal_at_position(enemy_scene: PackedScene, pos: Vector2) -> void:
-    if not spawner_enabled:
-        return
+	var container := Node2D.new()
+	add_child(container)
+	container.global_position = pos
 
-    var container = Node2D.new()
-    add_child(container)
-    container.global_position = pos
+	var portal := template_portal.duplicate() as AnimatedSprite2D
+	container.add_child(portal)
+	portal.visible = true
+	portal.modulate.a = 0.0
+	portal.animation = portal_animation
+	portal.play()
 
-    # Duplicate portal and animate fade-in
-    var portal = template_portal.duplicate() as AnimatedSprite2D
-    container.add_child(portal)
-    portal.position = Vector2.ZERO
-    portal.visible = true
-    portal.modulate.a = 0.0
-    portal.animation = portal_animation
-    portal.play()
-    await portal.create_tween().tween_property(portal, "modulate:a", 1.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN).finished
+	# Portal fade-in
+	await portal.create_tween() \
+		.tween_property(portal, "modulate:a", 1.0, 0.25) \
+		.set_trans(Tween.TRANS_SINE) \
+		.set_ease(Tween.EASE_IN) \
+		.finished
 
-    # Wait before spawning enemy
-    await get_tree().create_timer(spawn_delay).timeout
+	await wait(spawn_delay)
 
-    # Spawn the enemy at portal position
-    var enemy = enemy_scene.instantiate()
-    enemy.global_position = portal.global_position
-    get_tree().current_scene.add_child(enemy)
+	var enemy := enemy_scene.instantiate() as Node2D
+	enemy.global_position = pos
+	get_tree().current_scene.add_child(enemy)
 
-    # Optional fly-out effect
-    if fly_out_distance > 0:
-        var target_pos = enemy.global_position + fly_out_direction.normalized() * fly_out_distance
-        await enemy.create_tween().tween_property(enemy, "global_position", target_pos, fly_out_duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT).finished
+	# Connect death signal
+	if enemy.has_signal("enemy_died"):
+		enemy.connect("enemy_died", Callable(self, "_on_enemy_died").bind(enemy_scene))
 
-    # Fade out portal and remove container
-    await portal.create_tween().tween_property(portal, "modulate:a", 0.0, portal_despawn).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT).finished
-    container.queue_free()
+	# Optional fly-out
+	if fly_out_distance > 0:
+		var target: Vector2 = enemy.global_position + fly_out_direction.normalized() * fly_out_distance
+		await enemy.create_tween() \
+			.tween_property(enemy, "global_position", target, fly_out_duration) \
+			.set_trans(Tween.TRANS_SINE) \
+			.set_ease(Tween.EASE_OUT) \
+			.finished
+
+	# Portal fade-out
+	await portal.create_tween() \
+		.tween_property(portal, "modulate:a", 0.0, portal_despawn) \
+		.finished
+
+	container.queue_free()
+
+# ==========================
+# --- Enemy Death Handler ---
+# ==========================
+func _on_enemy_died(enemy_scene: PackedScene) -> void:
+	if active_enemies.has(enemy_scene):
+		active_enemies[enemy_scene] = max(active_enemies[enemy_scene] - 1, 0)
+
+# ==========================
+# --- Utility Wait ---
+# ==========================
+func wait(t: float) -> void:
+	await get_tree().create_timer(t).timeout

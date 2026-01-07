@@ -157,7 +157,6 @@ enemy_4 = ExtResource("15_pleq2")
 enemy_5 = ExtResource("13_vf3rk")
 enemy_6 = ExtResource("17_i54yb")
 top_spawn_points = Array[Vector2]([Vector2(1800, 200), Vector2(1800, 400), Vector2(1700, 600), Vector2(1650, 800)])
-right_corners = Array[Vector2]([Vector2(1800, 200)])
 
 [connection signal="pressed" from="debugcanvas/respawnbutton" to="debugcanvas" method="_on_respawnbutton_pressed"]
 [connection signal="pressed" from="debugcanvas/damageshieldbutton" to="debugcanvas" method="_on_damageshieldbutton_pressed"]
