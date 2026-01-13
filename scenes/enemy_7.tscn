@@ -43,24 +43,23 @@ homing_bullet_scene = ExtResource("4_v5pa0")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_jwy4i")
-flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_64bn5")
 
 [node name="BulletSpawn1" type="Node2D" parent="."]
-position = Vector2(-62, 0)
+position = Vector2(61, 0)
 
 [node name="BulletSpawn2" type="Node2D" parent="."]
-position = Vector2(-28, -33)
+position = Vector2(30, 30)
 
 [node name="BulletSpawn3" type="Node2D" parent="."]
-position = Vector2(-28, 30)
+position = Vector2(28, -32)
 
 [node name="Exhaust" type="AnimatedSprite2D" parent="."]
 z_index = -1
-position = Vector2(60, 1)
+position = Vector2(-70, 0)
 sprite_frames = SubResource("SpriteFrames_v5pa0")
 animation = &"exhaust"
 autoplay = "exhaust"

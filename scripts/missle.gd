@@ -12,6 +12,9 @@ extends CharacterBody2D
 @export var explosion_scene: PackedScene
 @export var trail_delay: float = 0.0001
 
+# --- Damage ---
+@export var damage: int = 50  # <-- Adjustable damage value
+
 # --- Wobble (optional) ---
 @export var wobble_strength: float = 0.15
 @export var wobble_speed: float = 12.0
@@ -90,14 +93,14 @@ func _physics_process(delta):
             # Movement base direction
             var velocity_dir = Vector2(speed_forward, 0).rotated(rotation)
 
-            # --- Arcade homing (your original implementation) ---
+            # --- Arcade homing ---
             if target and target.is_inside_tree():
                 var to_target = (target.global_position - global_position).normalized()
                 var desired_angle = to_target.angle()
                 var max_turn = homing_turn_speed * delta
                 rotation += clamp(desired_angle - rotation, -max_turn, max_turn)
 
-            # --- Wobble effect (optional) ---
+            # --- Wobble effect ---
             if wobble_strength > 0.0:
                 rotation += sin(Time.get_ticks_msec() * 0.001 * wobble_speed) * wobble_strength * delta
 
@@ -108,7 +111,7 @@ func _physics_process(delta):
                 if hit and hit.is_in_group("enemy"):
                     explode()
                     if hit.has_method("take_damage"):
-                        hit.take_damage(50)
+                        hit.take_damage(damage)  # <-- Use variable now
 
     # Exhaust shader update
     if exhaust and exhaust.visible:

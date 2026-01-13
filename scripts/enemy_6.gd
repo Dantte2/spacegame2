@@ -3,13 +3,13 @@ extends CharacterBody2D
 # --------------------
 # Health
 # --------------------
-@export var max_health: int = 100
+@export var max_health: int = 550
 var health: int
 
 # --------------------
 # Movement (Y follow)
 # --------------------
-@export var vertical_speed: float = 150.0
+@export var vertical_speed: float = 200.0
 @export var y_tolerance: float = 5.0
 
 # --------------------
@@ -72,7 +72,7 @@ func get_player() -> Node2D:
         return players[0]
     return null
 
-func follow_player_y(delta):
+func follow_player_y(_delta):
     var player = get_player()
     if player == null:
         velocity.y = 0

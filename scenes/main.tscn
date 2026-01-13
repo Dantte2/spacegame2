@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dj1l0psp2csoc"]
+[gd_scene load_steps=14 format=3 uid="uid://dj1l0psp2csoc"]
 
 [ext_resource type="PackedScene" uid="uid://c8t6ci14xvmh" path="res://scenes/player.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://d2ys40ej5wjdg" path="res://scripts/camera_2d.gd" id="2_o6xl0"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://b7xwrswtanx08" path="res://assets/background/forest 1920x1080/forest_mid.png" id="6_85g3d"]
 [ext_resource type="Texture2D" uid="uid://ijcv6rkg8pyc" path="res://assets/background/forest 1920x1080/forest_short.png" id="7_choun"]
 [ext_resource type="Texture2D" uid="uid://bgaxwnigmbuxe" path="res://assets/ui/bars/04.png" id="8_tipki"]
+[ext_resource type="Script" uid="uid://cha711j4dsqh2" path="res://scripts/spwanwaves.gd" id="9_85g3d"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_85g3d"]
 atlas = ExtResource("8_tipki")
@@ -98,3 +99,6 @@ nine_patch_stretch = true
 texture_under = SubResource("AtlasTexture_tipki")
 texture_progress = SubResource("AtlasTexture_ya4ey")
 metadata/_edit_use_anchors_ = true
+
+[node name="spwanwaves" type="Node2D" parent="."]
+script = ExtResource("9_85g3d")

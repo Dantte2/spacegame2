@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dw2p8f653avv2"]
+[gd_scene load_steps=22 format=3 uid="uid://dw2p8f653avv2"]
 
 [ext_resource type="Texture2D" uid="uid://nrn1osh04ht5" path="res://assets/background/forest 1920x1080/forest_sky.png" id="1_kayp2"]
 [ext_resource type="Script" uid="uid://bg6ib4nrexb48" path="res://scripts/debugcanvas.gd" id="1_svo7y"]
@@ -16,7 +16,6 @@
 [ext_resource type="PackedScene" uid="uid://bpkiveafyhfog" path="res://scenes/enemy_3.tscn" id="14_i54yb"]
 [ext_resource type="PackedScene" uid="uid://deruu8hgkc3j8" path="res://scenes/enemy_4.tscn" id="15_pleq2"]
 [ext_resource type="PackedScene" uid="uid://c7gqn3pkx6gpp" path="res://scenes/enemy_6.tscn" id="16_1xtxu"]
-[ext_resource type="PackedScene" uid="uid://d1n8plgg8prm8" path="res://scenes/enemy_7.tscn" id="17_wg4p5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_o7ao6"]
 atlas = ExtResource("9_5ph7u")
@@ -44,22 +43,9 @@ glow_hdr_threshold = 1.5
 
 [node name="debugcanvas" type="CanvasLayer" parent="."]
 script = ExtResource("1_svo7y")
-enemy_scene = ExtResource("7_t48sv")
+wave_enemies = Array[PackedScene]([ExtResource("7_t48sv"), ExtResource("7_t48sv"), ExtResource("14_i54yb"), ExtResource("15_pleq2")])
+spawn_positions = Array[Vector2]([Vector2(1640, 116), Vector2(1792, 393), Vector2(1798, 622), Vector2(1449, 664), Vector2(1672, 397), Vector2(1780, 271), Vector2(1780, 733), Vector2(1703, 590), Vector2(1703, 516), Vector2(1800, 539)])
 player_node = NodePath("../player")
-
-[node name="respawnbutton" type="Button" parent="debugcanvas"]
-offset_left = 8.0
-offset_top = 145.0
-offset_right = 140.0
-offset_bottom = 176.0
-text = "respawn enemy"
-
-[node name="damageshieldbutton" type="Button" parent="debugcanvas"]
-offset_left = 17.0
-offset_top = 101.0
-offset_right = 139.0
-offset_bottom = 127.0
-text = "shield"
 
 [node name="FPSLabel" type="Label" parent="debugcanvas"]
 offset_left = 11.0
@@ -67,6 +53,13 @@ offset_top = 43.0
 offset_right = 52.0
 offset_bottom = 66.0
 script = ExtResource("3_naxnx")
+
+[node name="SpawnWaveButton" type="Button" parent="debugcanvas"]
+offset_left = 20.0
+offset_top = 183.0
+offset_right = 126.0
+offset_bottom = 214.0
+text = "Spawn Wave"
 
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 visible = false
@@ -159,10 +152,9 @@ right_corners = Array[Vector2]([Vector2(1820, 130), Vector2(1750, 130), Vector2(
 back_line_points = Array[Vector2]([Vector2(1820, 488), Vector2(1803, 877), Vector2(1818, 177), Vector2(1813, 632), Vector2(1801, 717), Vector2(1820, 347)])
 front_line_points = Array[Vector2]([Vector2(1544, 741), Vector2(1565, 660), Vector2(1580, 559), Vector2(1580, 436), Vector2(1572, 345), Vector2(1537, 264)])
 
-[node name="enemy7" parent="." instance=ExtResource("17_wg4p5")]
-position = Vector2(1796, 536)
+[node name="enemy6" parent="." instance=ExtResource("16_1xtxu")]
+position = Vector2(1821, 559)
 
-[connection signal="pressed" from="debugcanvas/respawnbutton" to="debugcanvas" method="_on_respawnbutton_pressed"]
-[connection signal="pressed" from="debugcanvas/damageshieldbutton" to="debugcanvas" method="_on_damageshieldbutton_pressed"]
+[connection signal="pressed" from="debugcanvas/SpawnWaveButton" to="debugcanvas" method="_on_spawn_wave_button_pressed"]
 
 [editable path="player"]

@@ -19,73 +19,73 @@ extends CharacterBody2D
 # --- Homing target ---
 var target: Node2D = null
 func set_target(player: Node2D) -> void:
-	target = player
+    target = player
 
 func _ready():
-	if exhaust:
-		exhaust.visible = true
-		exhaust.play("exhaust")
+    if exhaust:
+        exhaust.visible = true
+        exhaust.play("exhaust")
 
-	velocity = Vector2(-initial_speed, 0)  # move left immediately
-	destroy_after_lifetime()
-	find_target()
+    velocity = Vector2(-initial_speed, 0)  # move left immediately
+    destroy_after_lifetime()
+    find_target()
 
 func find_target():
-	if target == null:
-		var players = get_tree().get_nodes_in_group("player")
-		if players.size() > 0:
-			target = players[0]
+    if target == null:
+        var players = get_tree().get_nodes_in_group("player")
+        if players.size() > 0:
+            target = players[0]
 
 func destroy_after_lifetime() -> void:
-	await get_tree().create_timer(lifetime).timeout
-	explode()
+    await get_tree().create_timer(lifetime).timeout
+    explode()
 
 func _physics_process(delta):
-	# --- Homing adjustment ---
-	if target and target.is_inside_tree():
-		var to_target = (target.global_position - global_position).normalized()
-		var desired_angle = to_target.angle()
-		var angle_diff = wrapf(desired_angle - velocity.angle(), -PI, PI)
-		var max_turn = homing_turn_speed * delta
-		angle_diff = clamp(angle_diff, -max_turn, max_turn)
-		velocity = velocity.rotated(angle_diff)
+    # --- Homing adjustment ---
+    if target and target.is_inside_tree():
+        var to_target = (target.global_position - global_position).normalized()
+        var desired_angle = to_target.angle()
+        var angle_diff = wrapf(desired_angle - velocity.angle(), -PI, PI)
+        var max_turn = homing_turn_speed * delta
+        angle_diff = clamp(angle_diff, -max_turn, max_turn)
+        velocity = velocity.rotated(angle_diff)
 
-	# --- Accelerate along current direction ---
-	velocity = velocity.normalized() * min(velocity.length() + acceleration * delta, max_speed)
+    # --- Accelerate along current direction ---
+    velocity = velocity.normalized() * min(velocity.length() + acceleration * delta, max_speed)
 
-	# --- Wobble ---
-	if wobble_strength > 0:
-		velocity = velocity.rotated(sin(Time.get_ticks_msec() * 0.001 * wobble_speed) * wobble_strength * delta)
+    # --- Wobble ---
+    if wobble_strength > 0:
+        velocity = velocity.rotated(sin(Time.get_ticks_msec() * 0.001 * wobble_speed) * wobble_strength * delta)
 
-	# --- Move ---
-	var collision = move_and_collide(velocity * delta)
-	if collision:
-		var hit = collision.get_collider()
-		_handle_hit(hit)
+    # --- Move ---
+    var collision = move_and_collide(velocity * delta)
+    if collision:
+        var hit = collision.get_collider()
+        _handle_hit(hit)
 
-	# --- Rotate sprite to match velocity ---
-	rotation = velocity.angle()
+    # --- Rotate sprite to match velocity ---
+    rotation = velocity.angle()
 
 func _handle_hit(target):
-	# find player script in parent chain
-	var player = target
-	while player and not player.has_method("take_damage"):
-		player = player.get_parent()
-	if not player:
-		return
+    # find player script in parent chain
+    var player = target
+    while player and not player.has_method("take_damage"):
+        player = player.get_parent()
+    if not player:
+        return
 
-	# Apply damage to shield first, then health
-	if player.shield > 0 and player.has_method("apply_shield_damage"):
-		player.apply_shield_damage(damage, global_position)
-	else:
-		player.take_damage(damage)
+    # Apply damage to shield first, then health
+    if player.shield > 0 and player.has_method("apply_shield_damage"):
+        player.apply_shield_damage(damage, global_position)
+    else:
+        player.take_damage(damage)
 
-	explode()
+    explode()
 
 
 func explode():
-	if explosion_scene:
-		var explosion = explosion_scene.instantiate()
-		explosion.global_position = global_position
-		get_tree().current_scene.add_child(explosion)
-	queue_free()
+    if explosion_scene:
+        var explosion = explosion_scene.instantiate()
+        explosion.global_position = global_position
+        get_tree().current_scene.add_child(explosion)
+    queue_free()
